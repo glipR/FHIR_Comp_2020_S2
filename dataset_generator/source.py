@@ -12,13 +12,10 @@ PRACS_PER_PATIENT = [1, 5]
 PRACS_PER_ENCOUNTER = [1, 3.5]
 
 ########### OBSERVATIONS ####################
-OBSERVATION_ONE = ["2339-0", "Glucose", [1, 3]]
-OBSERVATION_TWO = ["39156-5", "Body_Mass_Index", [0.8, 3]]
-OBSERVATION_THREE = ["55284-4", "Blood_Pressure", [0.8, 1.8]]
-##OBSERVATION_THREE = ['8867-4', 'Heart_Rate', [0.5, 1]]
-OBSERVATION_FOUR = ["2085-9", "HDL Cholesterol", [0.5, 1.5]]
-OBSERVATION_FIVE = ["72166-2", "Tobacco Smokimg Status", [0.5, 1.5]]
-OBSERVATION_LIST = [OBSERVATION_ONE]
+OBSERVATION_PRESSURE = ["55284-4", "Blood_Pressure", [0.8, 1.8]]
+OBSERVATION_SMOKING = ["72166-2", "Tobacco Smoking Status", [0.5, 1.5]]
+OBSERVATION_PLATELET = ["32623-1", "Platelet Mean Volume", [0.5, 4.5]]
+OBSERVATION_LIST = [OBSERVATION_PRESSURE, OBSERVATION_SMOKING, OBSERVATION_PLATELET]
 #############################################
 
 API_TOKEN = "b6ai0PI8aEEGrUGnMA18zAZsfqaBbFdD"
