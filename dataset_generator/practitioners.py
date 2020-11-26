@@ -16,41 +16,41 @@ def generate_practitioners(number_practitioners, api_url, api_token, directory_p
     pracs_left = number_practitioners
     page_token = None
     while pracs_left > 0:
-        request_url = api_url + 'Practitioner?_count={}&apikey={}'.format(
-            min(1000, pracs_left),
-            api_token
+        request_url = api_url + "Practitioner?_count={}&apikey={}".format(
+            min(1000, pracs_left), api_token
         )
         if page_token is not None:
-            request_url += '&_page_token=' + page_token
+            request_url += "&_page_token=" + page_token
 
         print("Requesting ", request_url)
         result = requests.get(request_url)
         print("Request made.")
 
         try:
-            practitioners += (json.loads(result.text)['entry'])
+            practitioners += json.loads(result.text)["entry"]
             pracs_left -= 1000
-            all_links = json.loads(result.text)['link']
+            all_links = json.loads(result.text)["link"]
         except KeyError:
             # Request has timed out
             continue
 
         next_link = None
         for link in all_links:
-            if link['relation'] == 'next':
+            if link["relation"] == "next":
                 next_link = link
                 break
 
         if next_link is None and pracs_left > 0:
-            print('Oh no')
+            print("Oh no")
             break
 
         if pracs_left > 0:
-            page_token = next_link['url'].split('_page_token=')[1]
+            page_token = next_link["url"].split("_page_token=")[1]
 
     print("Got {} practitioners".format(len(practitioners)))
 
     from collections import defaultdict
+
     org_mapping = defaultdict(list)
 
     # We need to first ensure that every organization has a practitioner. Then we can randomise.
@@ -63,7 +63,9 @@ def generate_practitioners(number_practitioners, api_url, api_token, directory_p
         else:
             org = RandomGenerator.ALL_ORGS[org_index]
             org_index += 1
-        prac_path = os.path.join(directory_path, "organizations/organization{}".format(org), "practitioners")
+        prac_path = os.path.join(
+            directory_path, "organizations/organization{}".format(org), "practitioners"
+        )
         filename = "practitioner{}".format(practitioner["resource"]["id"])
         org_mapping[org].append(practitioner["resource"]["id"])
         del practitioner["search"]
@@ -72,7 +74,9 @@ def generate_practitioners(number_practitioners, api_url, api_token, directory_p
 
     all_pracs = os.path.join(directory_path, "all_practitioners")
     for i, prac in enumerate(practitioners):
-        prac_file = os.path.join(all_pracs, "practitioner{}.json".format(prac["resource"]["id"]))
+        prac_file = os.path.join(
+            all_pracs, "practitioner{}.json".format(prac["resource"]["id"])
+        )
         with open(prac_file, "w") as f:
             f.write(json.dumps(prac, indent=2))
 

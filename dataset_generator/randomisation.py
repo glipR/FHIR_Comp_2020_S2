@@ -1,5 +1,6 @@
 import random
 
+
 class RandomGenerator:
 
     # 0.5 for an even distribution
@@ -10,7 +11,7 @@ class RandomGenerator:
     def set_all_orgs(cls, orgs):
         # Input should be a list of IDs.
         cls.ALL_ORGS = orgs
-    
+
     @classmethod
     def set_all_pracs(cls, pracs):
         # Input should be a mapping from org ids to prac ids.
@@ -27,7 +28,9 @@ class RandomGenerator:
     @classmethod
     def random_select(cls, items, bias):
         if len(items) == 0:
-            raise ValueError("Random selections should always be done on a nonempty list.")
+            raise ValueError(
+                "Random selections should always be done on a nonempty list."
+            )
         lo = 0
         hi = len(items)
         while hi - lo > 1:

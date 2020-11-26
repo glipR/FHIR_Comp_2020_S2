@@ -1,5 +1,6 @@
 import random
 
+
 class WeightedRandom:
 
     # 0.5 for an even distribution
@@ -10,7 +11,7 @@ class WeightedRandom:
     def set_all_orgs(cls, orgs):
         # Input should be a list of IDs.
         cls.ALL_ORGS = orgs
-    
+
     @classmethod
     def set_all_pracs(cls, pracs):
         # Input should be a list of IDs.
@@ -34,4 +35,3 @@ class WeightedRandom:
             else:
                 lo = (lo + hi) // 2
         return items[lo]
-
