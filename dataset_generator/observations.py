@@ -11,7 +11,7 @@ def generate_observations(
     observation_list, total_encounters, api_url, api_token, directory_path
 ):
     print("=== Generating Observations")
-    for key, display, count in observation_list:
+    for key, display, count, extra_info in observation_list:
         obs = []
         obs_left = math.ceil(total_encounters * count[1])
         page_token = None
@@ -85,7 +85,13 @@ def generate_observations(
                         random.random() * (count[1] - count[0]) + count[0]
                     )
 
-                    for entry in obs[obs_offset : obs_offset + expected_obs]:
+                    for index, entry in enumerate(
+                        obs[obs_offset : obs_offset + expected_obs], start=obs_offset
+                    ):
+                        if "value_generator" in extra_info:
+                            entry["resource"]["valueQuantity"]["value"] = extra_info[
+                                "value_generator"
+                            ](index)
                         try:
                             # Set patient
                             entry["resource"]["subject"][

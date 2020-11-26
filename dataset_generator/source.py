@@ -1,3 +1,5 @@
+import numpy as np
+
 # TOTAL AMOUNTS
 NUMBER_PATIENTS = 500
 NUMBER_OF_PRACTITIONERS = 20
@@ -12,9 +14,14 @@ PRACS_PER_PATIENT = [1, 5]
 PRACS_PER_ENCOUNTER = [1, 3.5]
 
 ########### OBSERVATIONS ####################
-OBSERVATION_PRESSURE = ["55284-4", "Blood_Pressure", [0.8, 1.8]]
-OBSERVATION_SMOKING = ["72166-2", "Tobacco Smoking Status", [0.5, 1.5]]
-OBSERVATION_PLATELET = ["32623-1", "Platelet Mean Volume", [0.5, 4.5]]
+OBSERVATION_PRESSURE = ["55284-4", "Blood_Pressure", [0.8, 1.8], {}]
+OBSERVATION_SMOKING = ["72166-2", "Tobacco Smoking Status", [0.5, 1.5], {}]
+OBSERVATION_PLATELET = [
+    "32623-1",
+    "Platelet Mean Volume",
+    [0.5, 4.5],
+    {"value_generator": (lambda x: np.random.normal(15, 5))},
+]
 OBSERVATION_LIST = [OBSERVATION_PRESSURE, OBSERVATION_SMOKING, OBSERVATION_PLATELET]
 #############################################
 
