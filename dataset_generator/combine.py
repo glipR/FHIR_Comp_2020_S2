@@ -1,6 +1,8 @@
 import os
 import json
 import shutil
+import yaml
+import re
 
 
 def combine_all(directory_path):
@@ -11,8 +13,8 @@ def combine_all(directory_path):
     os.mkdir(build_path)
 
     # Create a new empty file
-    for key in ['patient', 'organization', 'practitioner', 'observation', 'encounter']:
-        with open('{}/{}_full_data.json'.format(build_path, key), 'w') as f:
+    for key in ['sythetic_mass_bundle']:
+        with open('{}/{}.json'.format(build_path, key), 'w') as f:
             bundle = """\
     {
     "resourceType": "Bundle",
@@ -69,6 +71,8 @@ def combine_all(directory_path):
 
                 encounters = []
                 observations = []
+                conditions = []
+                medications = []
 
                 encs = list(filter(lambda x: os.path.isdir(os.path.join(patient_path, x)), os.listdir(patient_path)))
                 for encounter in encs:
@@ -84,7 +88,7 @@ def combine_all(directory_path):
                         f.write('\n    ' + '\n    '.join(text.split('\n')) + ',')
                     encounters.append(encounter_object)
 
-                    obss = list(filter(lambda x: os.path.isdir(os.path.join(encounter_path, x)), os.listdir(encounter_path)))
+                    obss = list(filter(lambda x: (os.path.isdir(os.path.join(encounter_path, x)) and x.startswith('observation')), os.listdir(encounter_path)))
                     for observation in obss:
                         observation_path = os.path.join(encounter_path, observation)
                         with open('{}/{}.json'.format(observation_path, observation), 'r') as f:
@@ -98,12 +102,58 @@ def combine_all(directory_path):
                             f.write('\n    ' + '\n    '.join(text.split('\n')) + ',')
                         observations.append(observation_object)
 
-    for key in ['patient', 'organization', 'practitioner', 'observation', 'encounter']:
-        with open('{}/{}_full_data.json'.format(build_path, key), 'a') as f:
+                    conds = list(filter(lambda x: (os.path.isdir(os.path.join(encounter_path, x)) and x.startswith('condition') ), os.listdir(encounter_path)))
+                    for condition in conds:
+                        condition_path = os.path.join(encounter_path, condition)
+                        with open('{}/{}.json'.format(condition_path, condition), 'r') as f:
+                            condition_object = json.loads(f.read())
+                            condition_object["request"] = {
+                                "method": "POST",
+                                "url": "Condition"
+                            }
+                        text = json.dumps(condition_object, indent=2)
+                        with open('{}/condition_full_data.json'.format(build_path), 'a') as f:
+                            f.write('\n    ' + '\n    '.join(text.split('\n')) + ',')
+                        conditions.append(condition_object)
+
+                    meds = list(filter(lambda x: (os.path.isdir(os.path.join(encounter_path, x)) and x.startswith('medication') ), os.listdir(encounter_path)))
+                    for medication in meds:
+                        medication_path = os.path.join(encounter_path, medication)
+                        with open('{}/{}.json'.format(medication_path, medication), 'r') as f:
+                            medication_object = json.loads(f.read())
+                            medication_object["request"] = {
+                                "method": "POST",
+                                "url": "MedicationRequest"
+                            }
+                        text = json.dumps(medication_object, indent=2)
+                        with open('{}/medicationrequest_full_data.json'.format(build_path), 'a') as f:
+                            f.write('\n    ' + '\n    '.join(text.split('\n')) + ',')
+                        medications.append(medication_object)
+
+    bundle_file = open('{}/{}.json'.format(build_path, 'sythetic_mass_bundle'), 'a')
+    for key in ['patient', 'organization', 'practitioner', 'observation', 'condition', 'medicationrequest', 'encounter']:
+        if(os.path.isfile('{}/{}_full_data.json'.format(build_path, key)) == False):
+            continue
+        json_file = open('{}/{}_full_data.json'.format(build_path, key), 'r')
+        bundle_file.write(json_file.read())
+
+    for key in ['sythetic_mass_bundle']:
+        with open('{}/{}.json'.format(build_path, key), 'a') as f:
             bundle = """
   ]
 }\
 """
             f.write(bundle)
+
+    for key in ['sythetic_mass_bundle']:
+        json_file = open('{}/{}.json'.format(build_path, key), 'r+')
+        fix_urn_data = re.sub('[a-zA-Z]*https:\/\/syntheticmass.mitre.org\/v1\/fhir\/[a-zA-Z]*\/', 'urn:uuid:', json_file.read(), flags=re.MULTILINE);
+        data = yaml.load(fix_urn_data, yaml.SafeLoader)
+        json_file.seek(0)
+        json_file.truncate()
+        json_file.write(json.dumps(data, indent=2))
+        json_file.close()
+
+
 
     print('Done.')

@@ -7,16 +7,13 @@ import random
 import math
 
 
-def generate_observations(leuko_count, lipo_count, blood_pressure_count, general_count, api_url, api_token, directory_path):
+def generate_observations(observation_list, total_encounters, api_url, api_token, directory_path):
     print("=== Generating Observations")
     for key, display, count in (
-        ('6690-2', 'Leuko', leuko_count),
-        ('18262-6', 'Low_Lipo', lipo_count),
-        ('55284-4', 'Blood_Pressure', blood_pressure_count),
-        ('72514-3', 'General', general_count),
+        observation_list
     ):
         obs = []
-        obs_left = 900000
+        obs_left = math.ceil(total_encounters * count[1])
         page_token = None
         
         while obs_left > 0:
@@ -32,10 +29,12 @@ def generate_observations(leuko_count, lipo_count, blood_pressure_count, general
             result = requests.get(request_url)
             print("Request made.")
 
+            obj = json.loads(result.text)
+
             try:
-                obs += (json.loads(result.text)['entry'])
+                obs += obj['entry']
                 obs_left -= 1000
-                all_links = json.loads(result.text)['link']
+                all_links = obj['link']
             except KeyError:
                 # Request has timed out
                 print("Request timed out.")
@@ -56,37 +55,32 @@ def generate_observations(leuko_count, lipo_count, blood_pressure_count, general
         print("Fetched {} {} observations".format(len(obs), display))
 
         obs_offset = 0
-        organizations = list(filter(lambda x: os.path.isdir(os.path.join(directory_path, x)), os.listdir(directory_path)))
+        all_orgs = os.path.join(directory_path, "organizations")
+        organizations = list(filter(lambda x: os.path.isdir(os.path.join(all_orgs, x)), os.listdir(all_orgs)))
         for organization in organizations:
-            org_path = os.path.join(directory_path, organization)
-            pracs = list(filter(lambda x: os.path.isdir(os.path.join(org_path, x)), os.listdir(org_path)))
-            for prac in pracs:
-                prac_path = os.path.join(org_path, prac)
-                patients = list(filter(lambda x: os.path.isdir(os.path.join(prac_path, x)), os.listdir(prac_path)))
-                for pat in patients:
-                    pat_path = os.path.join(prac_path, pat)
-                    encounters = list(filter(lambda x: os.path.isdir(os.path.join(pat_path, x)), os.listdir(pat_path)))
-                    for encounter in encounters:
-                        expected_obs = math.floor(random.random() * (count[1] - count[0]) + count[0])
+            org_path = os.path.join(all_orgs, organization)
+            all_patients = os.path.join(org_path, "patients")
+            patients = list(filter(lambda x: os.path.isdir(os.path.join(all_patients, x)), os.listdir(all_patients)))
+            for patient in patients:
+                pat_path = os.path.join(all_patients, patient)
+                all_encounters = os.path.join(pat_path, "encounters")
+                encounters = list(filter(lambda x: os.path.isdir(os.path.join(all_encounters, x)), os.listdir(all_encounters)))
+                for encounter in encounters:
+                    expected_obs = math.floor(random.random() * (count[1] - count[0]) + count[0])
 
-                        for entry in obs[obs_offset:obs_offset + expected_obs]:
-                            try:
-                                # Set patient
-                                entry['resource']['subject']['reference'] = 'urn:uuid:' + pat.replace('patient', '')
-                                # Set encounter
-                                entry['resource']['encounter']['reference'] = 'urn:uuid:' + encounter.replace('encounter', '')
-                            except KeyError:
-                                entry['resource']['context']['reference'] = 'Encounter/' + encounter.replace('encounter', '')
-                            path = Path(directory_path, organization, prac, pat, encounter, 'observation{}'.format(entry['resource']['id']))
+                    for entry in obs[obs_offset:obs_offset + expected_obs]:
+                        try:
+                            # Set patient
+                            entry['resource']['subject']['reference'] = 'urn:uuid:' + patient.replace('patient', '')
+                            # Set encounter
+                            entry['resource']['encounter']['reference'] = 'urn:uuid:' + encounter.replace('encounter', '')
+                        except KeyError:
+                            entry['resource']['context']['reference'] = 'Encounter/' + encounter.replace('encounter', '')
+                        path = Path(all_encounters, encounter, "observations", 'observation{}.json'.format(entry['resource']['id']))
 
-                            if path.exists() and path.is_dir():
-                                shutil.rmtree(path)
-                            os.mkdir(path)
-
-                            file_path = os.path.join(path, 'observation{}.json'.format(entry['resource']['id']))
-                            del entry['search']
-                            with open(file_path, 'w') as f:
-                                f.write(json.dumps(entry, indent=2))
-                        obs_offset += expected_obs
+                        del entry['search']
+                        with open(path, 'w') as f:
+                            f.write(json.dumps(entry, indent=2))
+                    obs_offset += expected_obs
 
     print("Done.")

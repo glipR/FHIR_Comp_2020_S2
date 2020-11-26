@@ -13,17 +13,24 @@ def generate_organizations(number_of_organizations, api_url, api_token, director
     )
     result = requests.get(request_url)
     entries = json.loads(result.text)['entry']
-    orgs = [None] * len(entries)
-    for i, entry in enumerate(entries):
-        orgs[i] = entry['resource']['id']
-        path = Path(directory_path, 'organization{}'.format(entry['resource']['id']))
+
+    org_path = os.path.join(directory_path, "organizations")
+
+    os.mkdir(org_path)
+
+    org_ids = [entry["resource"]["id"] for entry in entries]
+
+    for entry in entries:
+        path = Path(org_path, 'organization{}'.format(entry['resource']['id']))
         if path.exists() and path.is_dir():
             shutil.rmtree(path)
 
         os.mkdir(path)
+        os.mkdir(os.path.join(path, "patients"))
+        os.mkdir(os.path.join(path, "practitioners"))
         file_path = os.path.join(path, 'organization{}.json'.format(entry['resource']['id']))
         del entry['search']
         with open(file_path, 'w') as f:
             f.write(json.dumps(entry, indent=2))
     print("Done.")
-    return orgs
+    return org_ids

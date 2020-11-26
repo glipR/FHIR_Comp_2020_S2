@@ -1,20 +1,19 @@
+from random import Random
 import requests
 import json
 import os
-from pathlib import Path
-import shutil
 import random
+from .randomisation import RandomGenerator
 
 
-def generate_practitioners(max_number_of_practitioners, practitioner_per_org, api_url, api_token, directory_path):
+def generate_practitioners(number_practitioners, api_url, api_token, directory_path):
     """
-    :param max_number_of_practitioners: Maximum number of practitioners in total
-    :param practitioner_per_org: Range of number of practitioners per organization ([min, max])
+    :param number_practitioners: Maximum number of practitioners in total
     :param directory_path: Directory containing all of the organizations
     """
     print("=== Generating practitioners")
     practitioners = []
-    pracs_left = max_number_of_practitioners
+    pracs_left = number_practitioners
     page_token = None
     while pracs_left > 0:
         request_url = api_url + 'Practitioner?_count={}&apikey={}'.format(
@@ -51,29 +50,31 @@ def generate_practitioners(max_number_of_practitioners, practitioner_per_org, ap
 
     print("Got {} practitioners".format(len(practitioners)))
 
-    practitioner_ids = [None] * len(practitioners)
+    from collections import defaultdict
+    org_mapping = defaultdict(list)
 
-    organizations = list(filter(lambda x: os.path.isdir(os.path.join(directory_path, x)), os.listdir(directory_path)))
-    for organization in organizations:
-        expected_len = random.randint(*practitioner_per_org)
-        entries = []
-        while len(entries) < expected_len:
-            practitioner_index = random.randint(0, len(practitioners)-1)
-            if practitioner_index not in entries:
-                entries.append(practitioner_index)
+    # We need to first ensure that every organization has a practitioner. Then we can randomise.
 
-        for entry_index in entries:
-            entry = practitioners[entry_index]
-            practitioner_ids[entry_index] = entry['resource']['id']
-            path = Path(directory_path, organization, 'practitioner{}'.format(entry['resource']['id']))
+    org_index = 0
 
-            if path.exists() and path.is_dir():
-                shutil.rmtree(path)
+    for practitioner in practitioners:
+        if org_index == len(RandomGenerator.ALL_ORGS):
+            org = RandomGenerator.random_org()
+        else:
+            org = RandomGenerator.ALL_ORGS[org_index]
+            org_index += 1
+        prac_path = os.path.join(directory_path, "organizations/organization{}".format(org), "practitioners")
+        filename = "practitioner{}".format(practitioner["resource"]["id"])
+        org_mapping[org].append(practitioner["resource"]["id"])
+        del practitioner["search"]
+        with open(os.path.join(prac_path, filename), "w") as f:
+            f.write(json.dumps(practitioner, indent=2))
 
-            os.mkdir(path)
-            file_path = os.path.join(path, 'practitioner{}.json'.format(entry['resource']['id']))
-            # del entry['search']
-            with open(file_path, 'w') as f:
-                f.write(json.dumps(entry, indent=2))
+    all_pracs = os.path.join(directory_path, "all_practitioners")
+    for i, prac in enumerate(practitioners):
+        prac_file = os.path.join(all_pracs, "practitioner{}.json".format(prac["resource"]["id"]))
+        with open(prac_file, "w") as f:
+            f.write(json.dumps(prac, indent=2))
+
     print("Done.")
-    return [i for i in practitioner_ids if i is not None]
+    return org_mapping

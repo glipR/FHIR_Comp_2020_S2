@@ -1,10 +1,11 @@
+from random import Random
 import requests
 import json
 import os
 from pathlib import Path
 import shutil
 import random
-from .weighted_random import WeightedRandom
+from .randomisation import RandomGenerator
 
 
 def generate_patients(total_patients, pracs_per_patient, api_url, api_token, directory_path):
@@ -13,8 +14,8 @@ def generate_patients(total_patients, pracs_per_patient, api_url, api_token, dir
     """
     print("=== Generating patients")
     patients = []
-    page_token = None
     patients_left = total_patients
+    page_token = None
 
     while patients_left > 0:
         request_url = api_url + 'Patient?_count={}&apikey={}'.format(
@@ -53,21 +54,23 @@ def generate_patients(total_patients, pracs_per_patient, api_url, api_token, dir
     print("Fetched {} patients".format(len(patients)))
 
     for patient in patients:
-        # Assign an organization
-        del patient["search"]
-        patient["managingOrganization"] = {
-            "reference": WeightedRandom.random_org()
+        org = RandomGenerator.random_org()
+        num_pracs = random.randint(*pracs_per_patient)
+        pracs = set([RandomGenerator.random_prac(org) for _ in range(num_pracs)])
+
+        patient["resource"]["managingOrganization"] = {
+            "reference": f"urn:uuid:{org}"
         }
-        prac_ids = list(set(WeightedRandom.random_prac() for _ in range(random.randint(*pracs_per_patient))))
-        patient["generalPractitioner"] = [{"reference": prac_id} for prac_id in prac_ids]
-        path = Path(directory_path, 'patient{}'.format(patient['resource']['id']))
+        patient["resource"]["generalPractitioner"] = [{"reference": f"urn:uuid:{prac_id}"} for prac_id in pracs]
+        del patient['search']
 
-        if path.exists() and path.is_dir():
-            shutil.rmtree(path)
-        os.mkdir(path)
-
-        file_path = os.path.join(path, 'patient{}.json'.format(patient['resource']['id']))
-        with open(file_path, 'w') as f:
+        patient_path = os.path.join(directory_path, "organizations/organization{}".format(org), "patients")
+        dirpath = os.path.join(patient_path, "patient{}".format(patient["resource"]["id"]))
+        filename = os.path.join(dirpath, "patient{}.json".format(patient["resource"]["id"]))
+        os.mkdir(dirpath)
+        with open(filename, "w") as f:
             f.write(json.dumps(patient, indent=2))
+        encounter_path = os.path.join(dirpath, "encounters")
+        os.mkdir(encounter_path)
 
     print("Done.")
