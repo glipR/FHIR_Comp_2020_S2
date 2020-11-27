@@ -60,8 +60,8 @@ def solve(lines):
                 break
         solutions[testno] = cur_index
     return "\n".join(
-        f"{prac_id} can save {sol} patients"
-        for prac_id, sol in zip(prac_ids, solutions)
+        f"Test {i}: {sol}"
+        for i, (prac_id, sol) in enumerate(zip(prac_ids, solutions), start=1)
     )
 
 
