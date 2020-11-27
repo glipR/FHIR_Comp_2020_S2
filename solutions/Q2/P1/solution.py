@@ -3,8 +3,7 @@ import itertools
 from dateutil import parser
 from ...read_data import read_dataset
 
-data = read_dataset("dataset/dataset")
-
+data = read_dataset("dataset/build")
 
 def solve(lines):
     # First, get the number of practitioners.
@@ -19,7 +18,7 @@ def solve(lines):
             for id, pat in data["patients"].items()
             if prac_ids[testno] in pat.practitioners
         }
-        for pat in patients:
+        for pat in patients.values():
             pat.platelets = None
         for obs in data["observations"].values():
             if obs.code != "32623-1":
@@ -47,14 +46,16 @@ def solve(lines):
                     )
                 )
             )
-            == 1
+            <= 1
         ), "More than one unit of measurement detected."
 
         # saveable_patients are now sorted with platelet volume increasing. Save patients from the beginning of the list.
         cur_index = 0
         while cur_index < len(saveable_patients):
-            if serum >= saveable_patients[cur_index].platelets[0][0]:
-                serum -= saveable_patients[cur_index].platelets[0][0]
+            required = 20 * saveable_patients[cur_index].platelets[0][0] + 10
+            if serum >= required:
+                serum -= required
+                cur_index += 1
             else:
                 break
         solutions[testno] = cur_index
