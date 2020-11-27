@@ -1,12 +1,12 @@
 import numpy as np
 
 # TOTAL AMOUNTS
-NUMBER_PATIENTS = 500
+NUMBER_PATIENTS = 100
 NUMBER_OF_PRACTITIONERS = 20
 NUMBER_OF_ORGANIZATIONS = 10
 
 # MAXIMUM REQUIRED QUERIES
-MAX_NUMBER_ENCOUNTERS = 1200
+MAX_NUMBER_ENCOUNTERS = 300
 
 # MAPPING AMOUNTS
 ENCOUNTERS_PER_PATIENT = [0.9, 3.2]
@@ -92,8 +92,8 @@ else:
     print("{} unique patients checked.".format(uniqueness[1]))
     # OUTPUT WAS: 193100 unique patients checked.
 
-# from .combine import combine_all
-# combine_all(dataset_path)
+from .combine import combine_all
+combine_all(dataset_path)
 
 # combined_dataset_path = os.path.join(dataset_path, 'build')
 # from replace_practitioner import merge_big_practitioners
