@@ -66,7 +66,7 @@ def generate_practitioners(number_practitioners, api_url, api_token, directory_p
         prac_path = os.path.join(
             directory_path, "organizations/organization{}".format(org), "practitioners"
         )
-        filename = "practitioner{}".format(practitioner["resource"]["id"])
+        filename = "practitioner{}.json".format(practitioner["resource"]["id"])
         org_mapping[org].append(practitioner["resource"]["id"])
         del practitioner["search"]
         with open(os.path.join(prac_path, filename), "w") as f:

@@ -83,7 +83,7 @@ def generate_encounters(
                         os.path.join(
                             spec_org_path,
                             "practitioners",
-                            "practitioner{}".format(prac),
+                            "practitioner{}.json".format(prac),
                         ),
                         "r",
                     ) as f:
