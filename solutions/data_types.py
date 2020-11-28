@@ -38,6 +38,8 @@ class Patient(Resource):
 
         self.gender = data["resource"]["gender"]
 
+        self.identifier = data['resource']['identifier']
+
         self.organization = data["resource"]["managingOrganization"]["reference"].split(":")[-1]
         self.practitioners = [
             obj["reference"].split(":")[-1]
@@ -51,7 +53,6 @@ class Patient(Resource):
         for prac in self.practitioners:
             all_objects["organizations"][self.organization].practitioners.append(prac)
             all_objects["practitioners"][prac].organizations.append(self.organization)
-
 
 
 class Encounter(Resource):
@@ -68,6 +69,12 @@ class Observation(Resource):
 
         self.code = data["resource"]["code"]["coding"][0]["code"]
         self.value = data["resource"].get("valueQuantity", None)
+
+        try:
+            self.valueCode = data['resource']['valueCodeableConcept']['coding'][0]['code']
+        except Exception:
+            self.valueCode = None
+
         self.effective = data["resource"]["effectiveDateTime"]
         self.component = data["resource"].get("component", [])
 
