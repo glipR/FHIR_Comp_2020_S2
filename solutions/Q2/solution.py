@@ -12,6 +12,7 @@ def solve(lines):
         org_id = lines[testno].strip()
         patients = data['organizations'][org_id].patients
         count = 0
+        smokers_count = 0
 
         for patient_id in patients:
             obs = data['patients'][patient_id].observations
@@ -27,10 +28,19 @@ def solve(lines):
                 observation = data['observations'][observation_id]
                 if observation.code != '72166-2' or observation.valueCode in ['266919005', '266927001']:
                     continue
+                smokers_count += 1
                 if latest_never is not None and latest_never > parser.parse(observation.effective):
                     count += 1
                     break
 
+        # if len(patients) > 0:
+        #     old_percent = smokers_count / len(patients)
+        #     new_percent = (smokers_count - count) / len(patients)
+        #     answers.append(f'{count} {old_percent:.2f}% {new_percent:.2f}%')
+        # else:
+        #     answers.append('No active patients')
+
+        # Comment line below if using the second variation
         answers.append(count)
 
     return "\n".join(

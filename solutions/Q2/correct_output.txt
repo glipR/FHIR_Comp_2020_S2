@@ -1,100 +1,100 @@
-Test 1: 0
-Test 2: 0
-Test 3: 0
-Test 4: 0
-Test 5: 0
-Test 6: 0
-Test 7: 0
-Test 8: 0
-Test 9: 0
-Test 10: 0
-Test 11: 0
-Test 12: 0
-Test 13: 0
-Test 14: 0
-Test 15: 0
-Test 16: 0
-Test 17: 0
-Test 18: 0
-Test 19: 0
-Test 20: 0
-Test 21: 0
-Test 22: 0
-Test 23: 0
-Test 24: 0
-Test 25: 0
-Test 26: 0
-Test 27: 0
-Test 28: 0
-Test 29: 0
-Test 30: 0
-Test 31: 1
-Test 32: 1
-Test 33: 0
-Test 34: 0
-Test 35: 0
-Test 36: 0
-Test 37: 0
-Test 38: 0
-Test 39: 0
-Test 40: 1
-Test 41: 0
-Test 42: 0
-Test 43: 0
-Test 44: 0
-Test 45: 0
-Test 46: 0
-Test 47: 0
-Test 48: 0
-Test 49: 0
-Test 50: 0
-Test 51: 0
-Test 52: 0
-Test 53: 0
-Test 54: 0
-Test 55: 0
-Test 56: 0
-Test 57: 0
-Test 58: 0
-Test 59: 0
-Test 60: 0
-Test 61: 0
-Test 62: 0
-Test 63: 0
-Test 64: 0
-Test 65: 0
-Test 66: 0
-Test 67: 0
-Test 68: 0
-Test 69: 0
-Test 70: 0
-Test 71: 0
-Test 72: 0
-Test 73: 0
-Test 74: 0
-Test 75: 0
-Test 76: 0
-Test 77: 0
-Test 78: 0
-Test 79: 0
-Test 80: 0
-Test 81: 0
-Test 82: 0
-Test 83: 0
-Test 84: 0
-Test 85: 0
-Test 86: 0
-Test 87: 1
-Test 88: 1
-Test 89: 2
-Test 90: 0
-Test 91: 0
-Test 92: 0
-Test 93: 0
-Test 94: 0
-Test 95: 0
-Test 96: 0
-Test 97: 0
-Test 98: 0
-Test 99: 0
-Test 100: 1
+Test 1: No active patients
+Test 2: 0 0.00% 0.00%
+Test 3: No active patients
+Test 4: No active patients
+Test 5: 0 0.00% 0.00%
+Test 6: 0 0.00% 0.00%
+Test 7: 0 0.23% 0.23%
+Test 8: No active patients
+Test 9: No active patients
+Test 10: No active patients
+Test 11: 0 0.00% 0.00%
+Test 12: 0 0.00% 0.00%
+Test 13: 0 0.00% 0.00%
+Test 14: No active patients
+Test 15: 0 0.00% 0.00%
+Test 16: 0 0.00% 0.00%
+Test 17: No active patients
+Test 18: 0 0.00% 0.00%
+Test 19: 0 0.20% 0.20%
+Test 20: No active patients
+Test 21: No active patients
+Test 22: No active patients
+Test 23: 0 0.00% 0.00%
+Test 24: 0 0.00% 0.00%
+Test 25: 0 0.00% 0.00%
+Test 26: No active patients
+Test 27: 0 0.00% 0.00%
+Test 28: 0 0.17% 0.17%
+Test 29: No active patients
+Test 30: No active patients
+Test 31: 1 0.25% 0.20%
+Test 32: 1 0.54% 0.46%
+Test 33: No active patients
+Test 34: 0 0.00% 0.00%
+Test 35: 0 0.00% 0.00%
+Test 36: 0 0.47% 0.47%
+Test 37: No active patients
+Test 38: 0 0.00% 0.00%
+Test 39: 0 0.00% 0.00%
+Test 40: 1 0.20% 0.00%
+Test 41: No active patients
+Test 42: No active patients
+Test 43: 0 0.00% 0.00%
+Test 44: 0 0.25% 0.25%
+Test 45: 0 0.00% 0.00%
+Test 46: 0 0.00% 0.00%
+Test 47: No active patients
+Test 48: 0 0.19% 0.19%
+Test 49: No active patients
+Test 50: 0 0.10% 0.10%
+Test 51: No active patients
+Test 52: 0 0.00% 0.00%
+Test 53: 0 0.00% 0.00%
+Test 54: 0 0.00% 0.00%
+Test 55: 0 0.50% 0.50%
+Test 56: 0 0.67% 0.67%
+Test 57: 0 0.00% 0.00%
+Test 58: 0 0.13% 0.13%
+Test 59: 0 0.00% 0.00%
+Test 60: 0 0.00% 0.00%
+Test 61: 0 0.00% 0.00%
+Test 62: 0 0.00% 0.00%
+Test 63: 0 0.30% 0.30%
+Test 64: 0 1.00% 1.00%
+Test 65: No active patients
+Test 66: 0 0.17% 0.17%
+Test 67: 0 0.00% 0.00%
+Test 68: No active patients
+Test 69: No active patients
+Test 70: 0 0.00% 0.00%
+Test 71: 0 0.00% 0.00%
+Test 72: No active patients
+Test 73: 0 0.00% 0.00%
+Test 74: No active patients
+Test 75: 0 0.00% 0.00%
+Test 76: 0 0.00% 0.00%
+Test 77: 0 0.00% 0.00%
+Test 78: 0 0.00% 0.00%
+Test 79: 0 0.00% 0.00%
+Test 80: 0 1.00% 1.00%
+Test 81: 0 0.20% 0.20%
+Test 82: No active patients
+Test 83: No active patients
+Test 84: No active patients
+Test 85: 0 0.00% 0.00%
+Test 86: No active patients
+Test 87: 1 0.39% 0.33%
+Test 88: 1 0.05% 0.03%
+Test 89: 2 0.18% 0.18%
+Test 90: 0 0.00% 0.00%
+Test 91: 0 0.00% 0.00%
+Test 92: No active patients
+Test 93: 0 0.00% 0.00%
+Test 94: No active patients
+Test 95: No active patients
+Test 96: No active patients
+Test 97: 0 0.00% 0.00%
+Test 98: 0 0.00% 0.00%
+Test 99: No active patients
+Test 100: 1 0.28% 0.26%
