@@ -60,6 +60,8 @@ class Encounter(Resource):
         super().__init__(data, all_objects)
 
         self.patient = data["resource"]["subject"]["reference"].split(":")[-1]
+        self.practitioners = list(map(lambda x: x["individual"]["reference"].split(":")[-1], data["resource"]["participant"]))
+        self.period_start = data["resource"]["period"]["start"]
         all_objects["patients"][self.patient].encounters.append(self.id)
 
 
