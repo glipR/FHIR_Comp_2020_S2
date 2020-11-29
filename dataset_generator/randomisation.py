@@ -5,7 +5,8 @@ class RandomGenerator:
 
     # 0.5 for an even distribution
     FRONT_BIAS_ORGS = 0.8
-    FRONT_BIAS_PRACS = 0.8
+    # Practitioner bias can't be large, otherwise q4 has no interesting solutions.
+    FRONT_BIAS_PRACS = 0.6
 
     @classmethod
     def set_all_orgs(cls, orgs):

@@ -19,11 +19,11 @@ def solve(lines):
             for prac in pracs
         }
         for encounter in data["encounters"].values():
+            if data["patients"][encounter.patient].organization != org_id: continue
             for prac in encounter.practitioners:
-                if prac in patient_info.keys():
-                    patient_info[prac][encounter.patient] = (patient_info[prac][encounter.patient][0] + 1, patient_info[prac][encounter.patient][1])
-                    if patient_info[prac][encounter.patient][1] is None or patient_info[prac][encounter.patient][1] > parser.parse(encounter.period_start):
-                        patient_info[prac][encounter.patient] = (patient_info[prac][encounter.patient][0], parser.parse(encounter.period_start))
+                patient_info[prac][encounter.patient] = (patient_info[prac][encounter.patient][0] + 1, patient_info[prac][encounter.patient][1])
+                if patient_info[prac][encounter.patient][1] is None or patient_info[prac][encounter.patient][1] > parser.parse(encounter.period_start):
+                    patient_info[prac][encounter.patient] = (patient_info[prac][encounter.patient][0], parser.parse(encounter.period_start))
         all_patients = set()
         for prac in pracs:
             # Sort by encounters descending, then datetime ascending.
