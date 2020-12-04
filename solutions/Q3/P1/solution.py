@@ -3,8 +3,6 @@ import itertools
 from dateutil import parser
 from ...read_data import read_dataset
 
-data = read_dataset("dataset/build")
-
 def indiv_solve(d, prac_id, serum):
     patients = {
         id: d["patients"][id]
@@ -49,7 +47,7 @@ def indiv_solve(d, prac_id, serum):
             break
     return cur_index
 
-def solve(lines):
+def solve(d, lines):
     # First, get the number of practitioners.
     n_pracs = int(lines[0])
     prac_ids = [""] * n_pracs
@@ -57,18 +55,20 @@ def solve(lines):
     for testno in range(n_pracs):
         prac_ids[testno], serum = lines[testno + 1].split()
         serum = int(serum)
-        solutions[testno] = indiv_solve(data, prac_ids[testno], serum)
+        solutions[testno] = indiv_solve(d, prac_ids[testno], serum)
     return "\n".join(
         f"Test {i}: {sol}"
         for i, (prac_id, sol) in enumerate(zip(prac_ids, solutions), start=1)
     )
 
+if __name__ == "__main__":
+    data = read_dataset("dataset/build")
 
-input_file_path = os.path.join(os.path.dirname(__file__), "input.txt")
-output_file_path = os.path.join(os.path.dirname(__file__), "correct_output.txt")
+    input_file_path = os.path.join(os.path.dirname(__file__), "input.txt")
+    output_file_path = os.path.join(os.path.dirname(__file__), "correct_output.txt")
 
-with open(input_file_path, "r") as f:
-    inp = f.readlines()
-result = solve(inp)
-with open(output_file_path, "w") as f:
-    f.write(result)
+    with open(input_file_path, "r") as f:
+        inp = f.readlines()
+    result = solve(data, inp)
+    with open(output_file_path, "w") as f:
+        f.write(result)
