@@ -13,7 +13,8 @@ def generate_observations(
     print("=== Generating Observations")
     for key, display, count, extra_info in observation_list:
         obs = []
-        obs_left = math.ceil(total_encounters * count[1])
+        # A safe estimate of how many observations will be needed.
+        obs_left = int(total_encounters * (count[0] + 0.66 * (count[1] - count[0])))
         page_token = None
 
         while obs_left > 0:

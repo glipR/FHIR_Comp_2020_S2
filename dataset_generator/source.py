@@ -1,17 +1,19 @@
 import numpy as np
 
 # TOTAL AMOUNTS
-NUMBER_PATIENTS = 100
-NUMBER_OF_PRACTITIONERS = 20
-NUMBER_OF_ORGANIZATIONS = 10
+NUMBER_PATIENTS = 100000
+# This is the maximum number of practitioners it seems?
+NUMBER_OF_PRACTITIONERS = 1077
+NUMBER_OF_ORGANIZATIONS = 100
 
 # MAXIMUM REQUIRED QUERIES
-MAX_NUMBER_ENCOUNTERS = 300
+MAX_NUMBER_ENCOUNTERS = 300000
 
 # MAPPING AMOUNTS
 ENCOUNTERS_PER_PATIENT = [0.9, 3.2]
 PRACS_PER_PATIENT = [1, 5]
 PRACS_PER_ENCOUNTER = [1, 3.5]
+ORGS_PER_PRAC = [1, 5.5]
 
 ########### OBSERVATIONS ####################
 OBSERVATION_PRESSURE = ["55284-4", "Blood_Pressure", [0.8, 1.8], {}]
@@ -19,10 +21,10 @@ OBSERVATION_SMOKING = ["72166-2", "Tobacco Smoking Status", [0.5, 1.5], {}]
 OBSERVATION_PLATELET = [
     "32623-1",
     "Platelet Mean Volume",
-    [0.5, 4.5],
+    [0.5, 3.5],
     {"value_generator": (lambda x: np.random.normal(15, 5))},
 ]
-OBSERVATION_LIST = [OBSERVATION_PRESSURE, OBSERVATION_SMOKING, OBSERVATION_PLATELET]
+OBSERVATION_LIST = [OBSERVATION_SMOKING, OBSERVATION_PLATELET]
 #############################################
 
 API_TOKEN = "b6ai0PI8aEEGrUGnMA18zAZsfqaBbFdD"
@@ -53,7 +55,7 @@ RandomGenerator.set_all_orgs(
 from .practitioners import generate_practitioners
 
 RandomGenerator.set_all_pracs(
-    generate_practitioners(NUMBER_OF_PRACTITIONERS, API_URL, API_TOKEN, dataset_path)
+    generate_practitioners(NUMBER_OF_PRACTITIONERS, ORGS_PER_PRAC, API_URL, API_TOKEN, dataset_path)
 )
 
 # Generate patients, give them an organization, and pick some practitioners from that organization.
