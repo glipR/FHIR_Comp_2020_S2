@@ -1,5 +1,6 @@
 import os
 import time
+import random
 from .read_data import read_dataset
 
 s = time.time()
@@ -18,6 +19,11 @@ def write_inputs():
     n_pracs = len(list(data["practitioners"].keys()))
     res = f"{n_pracs}\n" + "\n".join(key for key in data["practitioners"]) + "\n"
     with open("solutions/practitioners.txt", "w") as f:
+        f.write(res)
+
+    n_pats = min(5000, len(list(data['patients'].keys())))
+    res = f"{n_pats}\n" + "\n".join(random.choices(list(data['patients'].keys()), k=n_pats))
+    with open("solutions/patients.txt", "w") as f:
         f.write(res)
 
 def get_num_patients():
@@ -98,11 +104,11 @@ def q3_test_p1_p2_discrepancy(input_file):
 
 s = time.time()
 
-# write_inputs()
+write_inputs()
 # get_num_patients()
 # get_serum_values()
-generate_random_serum_amounts()
-q3_test_p1_p2_discrepancy("solutions/practitioners_serum_random.txt")
+# generate_random_serum_amounts()
+# q3_test_p1_p2_discrepancy("solutions/practitioners_serum_random.txt")
 
 e = time.time()
 
