@@ -1,0 +1,2 @@
+Test 1: IMPOSSIBLE
+Test 2: POSSIBLE
