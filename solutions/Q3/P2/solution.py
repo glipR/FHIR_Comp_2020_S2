@@ -2,9 +2,11 @@ import os
 import itertools
 from dateutil import parser
 from ...read_data import read_dataset
+import decimal
 
 
 def indiv_solve(d, prac_id, serum):
+    serum = decimal.Decimal(serum)
     patients = {
         id: d["patients"][id]
         for id in d["practitioners"][prac_id].patients
@@ -17,7 +19,8 @@ def indiv_solve(d, prac_id, serum):
                 continue
             if pat.platelets is None or pat.platelets[1] < parser.parse(obs.effective):
                 pat.platelets = (
-                    (obs.value["value"], obs.value["unit"]),
+                    # Adding or subtracting 0.000002 here does not affect the correct response. Therefore precision is likely not an issue.
+                    (decimal.Decimal(obs.value["value"]), obs.value["unit"]),
                     parser.parse(obs.effective),
                 )
     saveable_patients = sorted(
@@ -43,7 +46,7 @@ def indiv_solve(d, prac_id, serum):
     # First, attempt to pair up as many male and female as possible.
     shared_index = 0
     while shared_index < min(len(male_pat), len(female_pat)):
-        required = 20 * male_pat[shared_index].platelets[0][0] + 10 + 20 * female_pat[shared_index].platelets[0][0] + 10
+        required = decimal.Decimal(20 * male_pat[shared_index].platelets[0][0]) + decimal.Decimal(10) + decimal.Decimal(20 * female_pat[shared_index].platelets[0][0]) + decimal.Decimal(10)
         if serum >= required:
             serum -= required
             shared_index += 1
@@ -56,7 +59,7 @@ def indiv_solve(d, prac_id, serum):
 
     cur_index = 0
     while cur_index < len(remaining_pat):
-        required = 20 * remaining_pat[cur_index].platelets[0][0] + 10
+        required = decimal.Decimal(20 * remaining_pat[cur_index].platelets[0][0]) + decimal.Decimal(10)
         if serum >= required:
             serum -= required
             cur_index += 1

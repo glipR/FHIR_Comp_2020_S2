@@ -2,8 +2,10 @@ import os
 import itertools
 from dateutil import parser
 from ...read_data import read_dataset
+import decimal
 
 def indiv_solve(d, prac_id, serum):
+    serum = decimal.Decimal(serum)
     patients = {
         id: d["patients"][id]
         for id in d["practitioners"][prac_id].patients
@@ -16,7 +18,8 @@ def indiv_solve(d, prac_id, serum):
                 continue
             if pat.platelets is None or pat.platelets[1] < parser.parse(obs.effective):
                 pat.platelets = (
-                    (obs.value["value"], obs.value["unit"]),
+                    # Adding or subtracting 0.0001 here does not affect the correct response. Therefore precision is likely not an issue.
+                    (decimal.Decimal(obs.value["value"]), obs.value["unit"]),
                     parser.parse(obs.effective),
                 )
     saveable_patients = sorted(
@@ -39,7 +42,7 @@ def indiv_solve(d, prac_id, serum):
     # saveable_patients are now sorted with platelet volume increasing. Save patients from the beginning of the list.
     cur_index = 0
     while cur_index < len(saveable_patients):
-        required = 20 * saveable_patients[cur_index].platelets[0][0] + 10
+        required = decimal.Decimal(20 * saveable_patients[cur_index].platelets[0][0]) + decimal.Decimal(10)
         if serum >= required:
             serum -= required
             cur_index += 1
