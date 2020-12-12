@@ -1,14 +1,13 @@
 class Marker:
 
-    MARKS_AWARDED = 100
-
     def __init__(self, correct_output_file, sample_lines):
         with open(correct_output_file, "r") as f:
             self.test_lines = f.read().strip().split()
         self.sample_lines = sample_lines
 
-    def mark_case(self, test_no, answer):
-        raise NotImplementedError()
+    def mark_case(self, correct, answer):
+        """All test answers follow the same format."""
+        return " ".join(correct).strip().lower() == " ".join(answer).strip().lower()
 
     def mark(self, output_file):
         with open(output_file, "r") as f:
@@ -33,11 +32,12 @@ class Marker:
         for key in case_answers:
             if key in duplicates: continue
             if key in self.sample_lines: continue
-            if self.mark_case(key, case_answers[key]):
+            correct_answer = self.test_lines[key-1].split()[2:]
+            if self.mark_case(correct_answer, case_answers[key]):
                 correct += 1
         return len(self.test_lines) - len(self.sample_lines), correct
 
-    def score(self, output_file):
+    def score(self, output_file, total_marks):
         total_possible, scored = self.mark(output_file)
         import numpy as np
         def sigmoid(x):
@@ -59,4 +59,4 @@ class Marker:
         
         def sit_middle(t, inflection=25.0):
             return (rush_to(t, inflection) + rush_from(t, inflection)) / 2
-        return self.MARKS_AWARDED * sit_middle(scored / total_possible)
+        return total_marks * sit_middle(scored / total_possible)
